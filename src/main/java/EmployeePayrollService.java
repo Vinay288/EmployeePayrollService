@@ -41,9 +41,14 @@ public class EmployeePayrollService {
     public long readEmployeePayrollData(IOService ioservice) {
         if(ioservice.equals(IOService.FILE_IO))
             this.employeeList =new EmployeePayrollFileIOService().readData();
+        else if(ioservice.equals(IOService.DB_IO))
+            this.employeeList=new EmployeePayrollFileIOService().readDataFromDB();
         return employeeList.size();
     }
-
+public Payroll updatePayroll(){
+        Payroll payroll = new EmployeePayrollFileIOService().updatePayroll();
+        return payroll;
+}
     public static void main(String[] args) {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         Scanner consoleInputReader = new Scanner(System.in);
