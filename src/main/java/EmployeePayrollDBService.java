@@ -1,22 +1,16 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class EmployeePayrollDBService {
-    public static void main(String[] args) {
+    public Connection getConnection() throws ClassNotFoundException, SQLException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service_db?useSSL=false";
         String userName = "root";
         String password = "1234";
         Connection connection;
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            System.out.println("Driver loaded!");
-            System.out.println("Connecting to database"+ jdbcURL);
-            connection= DriverManager.getConnection(jdbcURL,userName,password);
-            System.out.println("Connection is successfull"+ connection);
-        } catch (Exception e) {
-            throw new IllegalStateException("lol", e);
-        }
-
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        connection = DriverManager.getConnection(jdbcURL, userName, password);
+        return connection;
     }
 }
 
