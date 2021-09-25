@@ -3,13 +3,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public class EmployeePayrollServiceTest {
+public class EmployeeServiceTest {
     @Test
     public void given3EmployeesWhenWrittenToFileShouldMatchEmployeeEntries() {
-        EmployeePayroll[] arrayOfEmployees= {
-                new EmployeePayroll(1,"Jeff Bezos",10000.0),
-                new EmployeePayroll(2,"Bill Gates", 5000.0),
-                new EmployeePayroll(3,"Mark Zuckerberg", 3000.0)
+        Employee[] arrayOfEmployees= {
+                new Employee(1,"Jeff Bezos"),
+                new Employee(2,"Bill Gates"),
+                new Employee(3,"Mark Zuckerberg")
         };
         EmployeePayrollService employeePayService=new EmployeePayrollService();
         employeePayService=(EmployeePayrollService) Arrays.asList(arrayOfEmployees);

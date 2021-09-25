@@ -1,24 +1,21 @@
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
-    private List<EmployeePayroll> employeePayrollList;
+    private List<Employee> employeeList;
     public enum IOService{CONSOLE_IO, FILE_IO, DB_IO, REST_IO};
     public EmployeePayrollService() {
-        this.employeePayrollList = new ArrayList<EmployeePayroll>();
+        this.employeeList = new ArrayList<Employee>();
     }
     public void writeEmployeePayrollData() {
-        System.out.println("Writing employee data \n"+ employeePayrollList);
+        System.out.println("Writing employee data \n"+ employeeList);
     }
     public void writeEmployeePayrollData(EmployeePayrollService.IOService ioservice) {
         if(ioservice==IOService.CONSOLE_IO)
-            System.out.println("Writing employee data \n"+ employeePayrollList);
+            System.out.println("Writing employee data \n"+ employeeList);
         else if(ioservice==IOService.FILE_IO)
-            new EmployeePayrollFileIOService().writeData(employeePayrollList);
+            new EmployeePayrollFileIOService().writeData(employeeList);
 
     }
     public void readEmployeePayrollData(Scanner consoleInputReader) {
@@ -28,7 +25,7 @@ public class EmployeePayrollService {
         String name = consoleInputReader.next();
         System.out.println("Enter Employee Salary");
         Double salary = consoleInputReader.nextDouble();
-        employeePayrollList.add(new EmployeePayroll(id, name, salary));
+        employeeList.add(new Employee(id, name));
     }
     public void printData(IOService ioService) {
         if(ioService.equals(IOService.FILE_IO)) {
@@ -43,8 +40,8 @@ public class EmployeePayrollService {
     }
     public long readEmployeePayrollData(IOService ioservice) {
         if(ioservice.equals(IOService.FILE_IO))
-            this.employeePayrollList=new EmployeePayrollFileIOService().readData();
-        return employeePayrollList.size();
+            this.employeeList =new EmployeePayrollFileIOService().readData();
+        return employeeList.size();
     }
 
     public static void main(String[] args) {
