@@ -14,6 +14,8 @@ public class EmployeePayrollService {
     private void writeEmployeePayrollData(EmployeePayrollService.IOService ioservice) {
         if(ioservice==IOService.CONSOLE_IO)
             System.out.println("Writing employee data \n"+ employeePayrollList);
+        else if(ioservice==IOService.FILE_IO)
+            new EmployeePayrollFileIOService().writeData(employeePayrollList);
 
     }
     private void readEmployeePayrollData(Scanner consoleInputReader) {
@@ -32,6 +34,7 @@ public class EmployeePayrollService {
         employeePayrollService.readEmployeePayrollData(consoleInputReader);
         employeePayrollService.writeEmployeePayrollData();
         employeePayrollService.writeEmployeePayrollData(IOService.CONSOLE_IO);
+        employeePayrollService.writeEmployeePayrollData(IOService.FILE_IO);
 
     }
 }
