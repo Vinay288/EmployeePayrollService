@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class EmployeePayrollDBService {
     public static void main(String[] args) {
@@ -9,9 +10,13 @@ public class EmployeePayrollDBService {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("Driver loaded!");
-        } catch (ClassNotFoundException e) {
+            System.out.println("Connecting to database"+ jdbcURL);
+            connection= DriverManager.getConnection(jdbcURL,userName,password);
+            System.out.println("Connection is successfull"+ connection);
+        } catch (Exception e) {
             throw new IllegalStateException("lol", e);
         }
+
     }
 }
 
