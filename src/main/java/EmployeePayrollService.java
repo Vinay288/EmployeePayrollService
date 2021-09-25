@@ -8,17 +8,17 @@ public class EmployeePayrollService {
     public EmployeePayrollService() {
         this.employeePayrollList = new ArrayList<EmployeePayroll>();
     }
-    private void writeEmployeePayrollData() {
+    public void writeEmployeePayrollData() {
         System.out.println("Writing employee data \n"+ employeePayrollList);
     }
-    private void writeEmployeePayrollData(EmployeePayrollService.IOService ioservice) {
+    public void writeEmployeePayrollData(EmployeePayrollService.IOService ioservice) {
         if(ioservice==IOService.CONSOLE_IO)
             System.out.println("Writing employee data \n"+ employeePayrollList);
         else if(ioservice==IOService.FILE_IO)
             new EmployeePayrollFileIOService().writeData(employeePayrollList);
 
     }
-    private void readEmployeePayrollData(Scanner consoleInputReader) {
+    public void readEmployeePayrollData(Scanner consoleInputReader) {
         System.out.println("Enter Employee ID");
         int id = consoleInputReader.nextInt();
         System.out.println("Enter employee name");
