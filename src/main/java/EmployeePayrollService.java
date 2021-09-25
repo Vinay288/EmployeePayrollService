@@ -8,7 +8,9 @@ public class EmployeePayrollService {
     public EmployeePayrollService() {
         this.employeePayrollList = new ArrayList<EmployeePayroll>();
     }
-
+    private void writeEmployeePayrollData() {
+        System.out.println("Writing employee data \n"+ employeePayrollList);
+    }
     private void readEmployeePayrollData(Scanner consoleInputReader) {
         System.out.println("Enter Employee ID");
         int id = consoleInputReader.nextInt();
@@ -22,6 +24,8 @@ public class EmployeePayrollService {
     public static void main(String[] args) {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         Scanner consoleInputReader = new Scanner(System.in);
+        employeePayrollService.readEmployeePayrollData(consoleInputReader);
+        employeePayrollService.writeEmployeePayrollData();
 
     }
 }
