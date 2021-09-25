@@ -14,4 +14,16 @@ public class Payroll {
         this.incomeTax=incomeTax;
         this.netPay=netPay;
     }
+
+    @Override
+    public String toString() {
+        return "Payroll{" +
+                "employeeId=" + employeeId +
+                ", basicPay=" + basicPay +
+                ", deductions=" + deductions +
+                ", taxablePay=" + taxablePay +
+                ", incomeTax=" + incomeTax +
+                ", netPay=" + netPay +
+                '}';
+    }
 }
