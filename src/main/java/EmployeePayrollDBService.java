@@ -27,12 +27,12 @@ public class EmployeePayrollDBService {
         return connection;
     }
 
-    public List<Employee> readEmployeeDataFromDB() {
+    public List<Employee> readEmployeeDataFromDB(String name) {
         if (preparedStatementForEmployeeData == null) {
             this.preparedStatementForEmployeeData();
         }
         try {
-            preparedStatementForEmployeeData.setString(1, "vinay");
+            preparedStatementForEmployeeData.setString(1, name);
             ResultSet resultSet = preparedStatementForEmployeeData.executeQuery();
             employeeList = this.getEmployeeDataList(resultSet);
         } catch (Exception e) {
@@ -56,11 +56,24 @@ public class EmployeePayrollDBService {
     private void preparedStatementForEmployeeData() {
         try {
             Connection connection = this.getConnection();
-            String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id where employe_name= ?";
+            String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id and employe_name= ?";
             preparedStatementForEmployeeData = connection.prepareStatement(query);
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
     }
+    public void updatePayroll(String name,Double basicPay){
+        String updateQuery="update payroll set basic_pay="+basicPay+"where employee_id in (select employee_id from employee where employe_name=\""+name+"\")";
+        try (Connection connection=this.getConnection()){
+            Statement statement=connection.createStatement();
+            ResultSet resultSet;
+                statement.executeUpdate(updateQuery);
+        }catch (Exception e) {
+
+            throw new DBException(e.getMessage());
+        }
+    }
+
+
 }
 
