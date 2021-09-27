@@ -1,7 +1,9 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class EmployeeServiceTest {
@@ -41,6 +43,15 @@ public class EmployeeServiceTest {
         employeePayrollService.updatePayroll(name, basicPay);
         boolean result = employeePayrollService.compareUpdateSync(name);
         Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void givenDateRange_WhenCorrect_RetrieveAllEMployeeJoined() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        LocalDate startDate = LocalDate.of(2020, 4, 19);
+        LocalDate endDate = LocalDate.of(2020, 6, 19);
+        List<Employee> employeeList = employeePayrollService.readEmployeeJoinedInRange(startDate, endDate);
+        Assertions.assertEquals(2, employeeList.size());
     }
 
 }
