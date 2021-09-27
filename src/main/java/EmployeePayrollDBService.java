@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class EmployeePayrollDBService {
@@ -7,6 +8,7 @@ public class EmployeePayrollDBService {
     private PreparedStatement updatePayrollStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
     private PreparedStatement employeeJoinedGivenRangeStatement;
+    private PreparedStatement mathFunctionStatement;
     List<Employee> employeeList;
 
     private EmployeePayrollDBService() {
@@ -121,6 +123,38 @@ public class EmployeePayrollDBService {
             employeeJoinedGivenRangeStatement.setDate(2, endDate);
             ResultSet resultSet = employeeJoinedGivenRangeStatement.executeQuery();
             return this.getEmployeeDataList(resultSet);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    public void preparedStatementForMathFunctionStatement(String functionName) {
+        try {
+            Connection connection = this.getConnection();
+            String sum = "select sum(net_pay) as result from employee e,payroll p where e.employee_id=p.employee_id and gender=? group by gender";
+            String avg = "select avg(net_pay) as result from employee e,payroll p where e.employee_id=p.employee_id and gender=? group by gender";
+            String min = "select min(net_pay) as result from employee e,payroll p where e.employee_id=p.employee_id and gender=? group by gender";
+            String max = "select min(net_pay) as result from employee e,payroll p where e.employee_id=p.employee_id and gender=? group by gender";
+            String count = "select count(*) as result from employee e where gender=? group by gender";
+            HashMap<String, String> functionMap = new HashMap<>();
+            functionMap.put("sum", sum);
+            functionMap.put("avg", avg);
+            functionMap.put("min", min);
+            functionMap.put("max", max);
+            functionMap.put("count", count);
+            mathFunctionStatement = connection.prepareStatement(functionMap.get(functionName));
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    public double getMathValueForGivenMathFunction(String function, String gender) {
+        this.preparedStatementForMathFunctionStatement(function);
+        try {
+            mathFunctionStatement.setString(1, gender);
+            ResultSet resultSet = mathFunctionStatement.executeQuery();
+            resultSet.next();
+            return resultSet.getDouble("result");
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
