@@ -36,6 +36,14 @@ public class Employee {
         this.company=company;
 
     }
+    public Employee(int id, String name, String gender, String address, Long phoneNumber, LocalDate startDate) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.startDate = startDate;
+    }
 
     @Override
     public String toString() {
