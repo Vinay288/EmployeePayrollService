@@ -53,5 +53,14 @@ public class EmployeePayrollDBService {
         return employeeList;
     }
 
+    private void preparedStatementForEmployeeData() {
+        try {
+            Connection connection = this.getConnection();
+            String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id where employe_name= ?";
+            preparedStatementForEmployeeData = connection.prepareStatement(query);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
 }
 
