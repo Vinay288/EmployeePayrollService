@@ -53,5 +53,11 @@ public class EmployeeServiceTest {
         List<Employee> employeeList = employeePayrollService.readEmployeeJoinedInRange(startDate, endDate);
         Assertions.assertEquals(2, employeeList.size());
     }
+    @Test
+    public void givenMathFunction_WhenCorrect_RetrieveTheResult() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        Double result=employeePayrollService.getMathValueForGivenMathFunction("sum","F");
+        System.out.println(result);
+    }
 
 }
