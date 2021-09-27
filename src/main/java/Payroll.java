@@ -1,12 +1,52 @@
 public class Payroll {
     private final Integer employeeId;
-    private final double basicPay;
-    private final double deductions;
-    private final double taxablePay;
-    private final double incomeTax;
-    private final double netPay;
+    private  double basicPay;
+    private  double deductions;
+    private  double taxablePay;
+    private  double incomeTax;
+    private  double netPay;
 
-    Payroll(Integer employeeId,double basicPay,double deductions,double taxablePay,double incomeTax,double netPay){
+    public double getBasicPay() {
+        return basicPay;
+    }
+
+    public void setBasicPay(double basicPay) {
+        this.basicPay = basicPay;
+    }
+
+    public double getDeductions() {
+        return deductions;
+    }
+
+    public void setDeductions(double deductions) {
+        this.deductions = deductions;
+    }
+
+    public double getTaxablePay() {
+        return taxablePay;
+    }
+
+    public void setTaxablePay(double taxablePay) {
+        this.taxablePay = taxablePay;
+    }
+
+    public double getIncomeTax() {
+        return incomeTax;
+    }
+
+    public void setIncomeTax(double incomeTax) {
+        this.incomeTax = incomeTax;
+    }
+
+    public double getNetPay() {
+        return netPay;
+    }
+
+    public void setNetPay(double netPay) {
+        this.netPay = netPay;
+    }
+
+    Payroll(Integer employeeId, double basicPay, double deductions, double taxablePay, double incomeTax, double netPay){
         this.employeeId=employeeId;
         this.basicPay=basicPay;
         this.deductions=deductions;
