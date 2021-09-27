@@ -17,7 +17,15 @@ public class Employee {
         this.name = name;
     }
 
-    public Employee(int id, String name, String gender, String address, Long phoneNumber, LocalDate startDate,Payroll payroll,Company company) {
+    public Payroll getPayroll() {
+        return payroll;
+    }
+
+    public void setPayroll(Payroll payroll) {
+        this.payroll = payroll;
+    }
+
+    public Employee(int id, String name, String gender, String address, Long phoneNumber, LocalDate startDate, Payroll payroll, Company company) {
         this.id = id;
         this.name = name;
         this.gender = gender;
