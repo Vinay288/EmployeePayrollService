@@ -1,9 +1,23 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeePayrollDBService {
-    public static Connection getConnection() throws ClassNotFoundException, SQLException {
+    private PreparedStatement preparedStatementForEmployeeData;
+    private static EmployeePayrollDBService employeePayrollDBService;
+    List<Employee> employeeList;
+
+    private EmployeePayrollDBService() {
+
+    }
+
+    public static EmployeePayrollDBService getDBServiceInstance() {
+        if (employeePayrollDBService == null)
+            employeePayrollDBService = new EmployeePayrollDBService();
+        return employeePayrollDBService;
+    }
+
+    public Connection getConnection() throws ClassNotFoundException, SQLException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service_db?useSSL=false";
         String userName = "root";
         String password = "1234";
@@ -12,5 +26,32 @@ public class EmployeePayrollDBService {
         connection = DriverManager.getConnection(jdbcURL, userName, password);
         return connection;
     }
+
+    public List<Employee> readEmployeeDataFromDB() {
+        if (preparedStatementForEmployeeData == null) {
+            this.preparedStatementForEmployeeData();
+        }
+        try {
+            preparedStatementForEmployeeData.setString(1, "vinay");
+            ResultSet resultSet = preparedStatementForEmployeeData.executeQuery();
+            employeeList = this.getEmployeeDataList(resultSet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return employeeList;
+    }
+
+    private List<Employee> getEmployeeDataList(ResultSet resultSet) {
+        employeeList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                employeeList.add(new Employee(resultSet.getInt("employee_id"), resultSet.getString("employe_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getLong("phone_number"), resultSet.getDate("start_date").toLocalDate(), new Payroll(resultSet.getInt("employee_id"), resultSet.getDouble("basic_pay"), resultSet.getDouble("deductions"), resultSet.getDouble("taxable_pay"), resultSet.getDouble("income_tax"), resultSet.getDouble("net_pay")), new Company(resultSet.getInt("company_id"), resultSet.getString("company_name"))));
+            }
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+        return employeeList;
+    }
+
 }
 
