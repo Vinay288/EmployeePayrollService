@@ -6,6 +6,7 @@ public class EmployeePayrollDBService {
     private PreparedStatement preparedStatementForEmployeeData;
     private PreparedStatement updatePayrollStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
+    private PreparedStatement employeeJoinedGivenRangeStatement;
     List<Employee> employeeList;
 
     private EmployeePayrollDBService() {
@@ -35,14 +36,14 @@ public class EmployeePayrollDBService {
         try {
             preparedStatementForEmployeeData.setString(1, name);
             ResultSet resultSet = preparedStatementForEmployeeData.executeQuery();
-            employeeList = this.getEmployeeDataList(resultSet);
+            employeeList = this.getCompleteEmployeeDataList(resultSet);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return employeeList;
     }
 
-    private List<Employee> getEmployeeDataList(ResultSet resultSet) {
+    private List<Employee> getCompleteEmployeeDataList(ResultSet resultSet) {
         employeeList = new ArrayList<>();
         try {
             while (resultSet.next()) {
@@ -54,6 +55,19 @@ public class EmployeePayrollDBService {
         return employeeList;
     }
 
+    private List<Employee> getEmployeeDataList(ResultSet resultSet) {
+        employeeList = new ArrayList<>();
+        try {
+            while (resultSet.next()) {
+                employeeList.add(new Employee(resultSet.getInt("employee_id"), resultSet.getString("employe_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getLong("phone_number"), resultSet.getDate("start_date").toLocalDate()));
+            }
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+        return employeeList;
+    }
+
+
     private void preparedStatementToReadEmployeeData() {
         try (Connection connection = this.getConnection()) {
             String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id and employe_name= ?";
@@ -64,9 +78,20 @@ public class EmployeePayrollDBService {
     }
 
     private void preparedStatementToUpdatePayroll() {
-        try (Connection connection = this.getConnection()) {
+        try {
+            Connection connection = this.getConnection();
             String updateQuery = "update payroll set basic_pay=? where employee_id in (select employee_id from employee where employe_name=?)";
             updatePayrollStatement = connection.prepareStatement(updateQuery);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    private void preparedStatementToretriveEmployeeInRange() {
+        try {
+            Connection connection = this.getConnection();
+            String query = "select * from employee where start_date between ? and ?";
+            employeeJoinedGivenRangeStatement = connection.prepareStatement(query);
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
@@ -76,7 +101,7 @@ public class EmployeePayrollDBService {
         if (updatePayrollStatement == null) {
             this.preparedStatementToUpdatePayroll();
         }
-        try (Connection connection = this.getConnection()) {
+        try {
             updatePayrollStatement.setDouble(1, basicPay);
             updatePayrollStatement.setString(2, name);
             updatePayrollStatement.executeUpdate();
@@ -87,5 +112,18 @@ public class EmployeePayrollDBService {
     }
 
 
+    public List<Employee> readEmployedJoinedRange(Date startDate, Date endDate) {
+        if (employeeJoinedGivenRangeStatement == null) {
+            this.preparedStatementToretriveEmployeeInRange();
+        }
+        try {
+            employeeJoinedGivenRangeStatement.setDate(1, startDate);
+            employeeJoinedGivenRangeStatement.setDate(2, endDate);
+            ResultSet resultSet = employeeJoinedGivenRangeStatement.executeQuery();
+            return this.getEmployeeDataList(resultSet);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
 }
 
