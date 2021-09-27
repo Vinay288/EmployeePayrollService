@@ -4,6 +4,7 @@ import java.util.List;
 
 public class EmployeePayrollDBService {
     private PreparedStatement preparedStatementForEmployeeData;
+    private PreparedStatement updatePayrollStatement;
     private static EmployeePayrollDBService employeePayrollDBService;
     List<Employee> employeeList;
 
@@ -29,7 +30,7 @@ public class EmployeePayrollDBService {
 
     public List<Employee> readEmployeeDataFromDB(String name) {
         if (preparedStatementForEmployeeData == null) {
-            this.preparedStatementForEmployeeData();
+            this.preparedStatementToReadEmployeeData();
         }
         try {
             preparedStatementForEmployeeData.setString(1, name);
@@ -53,22 +54,33 @@ public class EmployeePayrollDBService {
         return employeeList;
     }
 
-    private void preparedStatementForEmployeeData() {
-        try {
-            Connection connection = this.getConnection();
+    private void preparedStatementToReadEmployeeData() {
+        try (Connection connection = this.getConnection()) {
             String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id and employe_name= ?";
             preparedStatementForEmployeeData = connection.prepareStatement(query);
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
     }
-    public void updatePayroll(String name,Double basicPay){
-        String updateQuery="update payroll set basic_pay="+basicPay+"where employee_id in (select employee_id from employee where employe_name=\""+name+"\")";
-        try (Connection connection=this.getConnection()){
-            Statement statement=connection.createStatement();
-            ResultSet resultSet;
-                statement.executeUpdate(updateQuery);
-        }catch (Exception e) {
+
+    private void preparedStatementToUpdatePayroll() {
+        try (Connection connection = this.getConnection()) {
+            String updateQuery = "update payroll set basic_pay=? where employee_id in (select employee_id from employee where employe_name=?)";
+            updatePayrollStatement = connection.prepareStatement(updateQuery);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    public void updatePayroll(String name, Double basicPay) {
+        if (updatePayrollStatement == null) {
+            this.preparedStatementToUpdatePayroll();
+        }
+        try (Connection connection = this.getConnection()) {
+            updatePayrollStatement.setDouble(1, basicPay);
+            updatePayrollStatement.setString(2, name);
+            updatePayrollStatement.executeUpdate();
+        } catch (Exception e) {
 
             throw new DBException(e.getMessage());
         }
