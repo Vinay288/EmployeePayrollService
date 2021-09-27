@@ -1,9 +1,16 @@
+import java.sql.Date;
+import java.sql.SQLData;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class EmployeePayrollService {
     private List<Employee> employeeList;
+
+    public List<Employee> readEmployeeJoinedInRange(LocalDate startDate,LocalDate endDate) {
+        return EmployeePayrollDBService.getDBServiceInstance().readEmployedJoinedRange(Date.valueOf(startDate),Date.valueOf(endDate));
+    }
 
     public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
 
