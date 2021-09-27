@@ -83,4 +83,7 @@ public class EmployeePayrollService {
         List<Employee> employeeList = EmployeePayrollDBService.getDBServiceInstance().employeeList;
         return employeeList.get(0).getPayroll().toString().equals(readEmployeePayrollData(IOService.DB_IO, name).get(0).getPayroll().toString());
     }
+    public double getMathValueForGivenMathFunction(String function,String gender){
+        return EmployeePayrollDBService.getDBServiceInstance().getMathValueForGivenMathFunction(function,gender);
+    }
 }
