@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.util.List;
 
 public class Employee {
     private Integer companyId;
@@ -10,6 +11,16 @@ public class Employee {
     public String name;
     private Payroll payroll;
     private Company company;
+
+    public List<Department> getDepartmentList() {
+        return departmentList;
+    }
+
+    public void setDepartmentList(List<Department> departmentList) {
+        this.departmentList = departmentList;
+    }
+
+    private List<Department> departmentList;
 
     public Employee(int id, String name) {
         this.id = id;
@@ -97,7 +108,6 @@ public class Employee {
         this.startDate = startDate;
         this.payroll = payroll;
         this.company = company;
-
     }
 
     public Employee(int id, String name, String gender, String address, Long phoneNumber, LocalDate startDate, int companyId) {
