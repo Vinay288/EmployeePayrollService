@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +65,8 @@ public class EmployeeServiceTest {
     public void givenNewEmployeePayrollData_WhenCorrect_InsertToEMployeeAndPayrollTable(){
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         Employee employee=new Employee(77,"vish","F","18th main road", 97845978L,LocalDate.of(2020,8,20),123);
+        Department department = new Department(1,"engineer");
+        employee.setDepartmentList(List.of(department));
         Payroll updatedPayroll=employeePayrollService.insertEmployeePayrollValues(employee,20000.00);
         boolean result = employeePayrollService.compareEmployeePayrollInsertSync(employee.getName(),updatedPayroll);
         Assertions.assertTrue(result);
