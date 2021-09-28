@@ -14,7 +14,7 @@ public class EmployeeServiceTest {
                 new Employee(2, "qwerty"),
                 new Employee(3, "zxcv")
         };
-        EmployeePayrollService employeePayService = new EmployeePayrollService();
+        EmployeePayrollService employeePayService;
         employeePayService = (EmployeePayrollService) Arrays.asList(arrayOfEmployees);
         employeePayService.writeEmployeePayrollData(EmployeePayrollService.IOService.FILE_IO);
         long entries = employeePayService.countEntries(EmployeePayrollService.IOService.FILE_IO);
@@ -58,6 +58,15 @@ public class EmployeeServiceTest {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
         Double result=employeePayrollService.getMathValueForGivenMathFunction("sum","F");
         System.out.println(result);
+    }
+
+    @Test
+    public void givenNewEmployeePayrollData_WhenCorrect_InsertToEMployeeAndPayrollTable(){
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        Employee employee=new Employee(77,"vish","F","18th main road", 97845978L,LocalDate.of(2020,8,20),123);
+        Payroll updatedPayroll=employeePayrollService.insertEmployeePayrollValues(employee,20000.00);
+        boolean result = employeePayrollService.compareEmployeePayrollInsertSync(employee.getName(),updatedPayroll);
+        Assertions.assertTrue(result);
     }
 
 }
