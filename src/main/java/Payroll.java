@@ -1,7 +1,16 @@
 public class Payroll {
-    private final Integer employeeId;
+    private Integer employeeId;
     private  double basicPay;
     private  double deductions;
+
+    public Integer getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(Integer employeeId) {
+        this.employeeId = employeeId;
+    }
+
     private  double taxablePay;
     private  double incomeTax;
     private  double netPay;
