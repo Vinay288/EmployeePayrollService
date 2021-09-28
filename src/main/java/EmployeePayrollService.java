@@ -12,9 +12,20 @@ public class EmployeePayrollService {
         return EmployeePayrollDBService.getDBServiceInstance().readEmployedJoinedRange(Date.valueOf(startDate),Date.valueOf(endDate));
     }
 
-    public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
+    public Payroll insertEmployeePayrollValues(Employee employee, double basicSalary) {
+     double deduction=(basicSalary/5);
+     double taxabalePay=basicSalary-deduction;
+     double incomeTax=taxabalePay/10;
+     double netPay=basicSalary-incomeTax;
+     Payroll payroll=new Payroll(employee.id,basicSalary,deduction,taxabalePay,incomeTax,netPay);
+     return EmployeePayrollDBService.getDBServiceInstance().insertEmployeePayrollValues(employee,payroll);
+    }
 
-    ;
+    public boolean compareEmployeePayrollInsertSync(String name,Payroll payroll) {
+        return payroll.toString().equals(readEmployeePayrollData(IOService.DB_IO,name).get(0).getPayroll().toString());
+    }
+
+    public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
 
     public EmployeePayrollService() {
         this.employeeList = new ArrayList<Employee>();
