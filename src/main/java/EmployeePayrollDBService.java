@@ -21,14 +21,18 @@ public class EmployeePayrollDBService {
         return employeePayrollDBService;
     }
 
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
-        String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service_db?useSSL=false";
-        String userName = "root";
-        String password = "1234";
-        Connection connection;
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        connection = DriverManager.getConnection(jdbcURL, userName, password);
-        return connection;
+    public Connection getConnection() {
+        try {
+            String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service_db?useSSL=false";
+            String userName = "root";
+            String password = "1234";
+            Connection connection;
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(jdbcURL, userName, password);
+            return connection;
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
     }
 
     public List<Employee> readEmployeeDataFromDB(String name) {
@@ -61,14 +65,13 @@ public class EmployeePayrollDBService {
         employeeList = new ArrayList<>();
         try {
             while (resultSet.next()) {
-                employeeList.add(new Employee(resultSet.getInt("employee_id"), resultSet.getString("employe_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getLong("phone_number"), resultSet.getDate("start_date").toLocalDate()));
+                employeeList.add(new Employee(resultSet.getInt("employee_id"), resultSet.getString("employe_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getLong("phone_number"), resultSet.getDate("start_date").toLocalDate(), resultSet.getInt("company_id")));
             }
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
         return employeeList;
     }
-
 
     private void preparedStatementToReadEmployeeData() {
         try (Connection connection = this.getConnection()) {
@@ -158,6 +161,42 @@ public class EmployeePayrollDBService {
         } catch (Exception e) {
             throw new DBException(e.getMessage());
         }
+    }
+
+    public Payroll insertEmployeePayrollValues(Employee employee, Payroll payroll) {
+        Payroll updatedPayroll;
+        String insertEmployee = String.format("insert into employee values('%s','%s','%s','%s','%s','%s','%s')", employee.getId(), employee.getName(), employee.getGender(), employee.getAddress(), employee.getPhoneNumber(), Date.valueOf(employee.getStartDate()), employee.getCompanyId());
+        String insertPayroll = String.format("insert into payroll values('%s','%s','%s','%s','%s','%s')", payroll.getEmployeeId(), payroll.getBasicPay(), payroll.getDeductions(), payroll.getTaxablePay(), payroll.getIncomeTax(), payroll.getNetPay());
+        Connection connection;
+        try {
+            connection = this.getConnection();
+            connection.setAutoCommit(false);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(insertEmployee);
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (Exception exec) {
+                throw new DBException(exec.getMessage());
+            }
+            throw new DBException(e.getMessage());
+        }
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(insertPayroll);
+            connection.commit();
+            updatedPayroll = payroll;
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (Exception exec) {
+                throw new DBException(exec.getMessage());
+            }
+            throw new DBException(e.getMessage());
+        }
+        return updatedPayroll;
     }
 }
 
