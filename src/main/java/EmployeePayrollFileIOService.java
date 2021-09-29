@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class EmployeePayrollFileIOService {
         employeeList.forEach(employee -> {
             String employeeDataString = employee.toString().concat("\n");
             empBuffer.append(employeeDataString);
+
         });
 
         try {
