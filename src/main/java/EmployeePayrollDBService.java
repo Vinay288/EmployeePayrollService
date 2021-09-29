@@ -75,7 +75,7 @@ public class EmployeePayrollDBService {
 
     private void preparedStatementToReadEmployeeData() {
         try (Connection connection = this.getConnection()) {
-            String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id and employe_name= ?";
+            String query = "select * from employee e, payroll p,company c where e.employee_id=p.employee_id and e.company_id=c.company_id and and is_active= true and employe_name= ?";
             preparedStatementForEmployeeData = connection.prepareStatement(query);
         } catch (Exception e) {
             throw new DBException(e.getMessage());
@@ -111,7 +111,6 @@ public class EmployeePayrollDBService {
             updatePayrollStatement.setString(2, name);
             updatePayrollStatement.executeUpdate();
         } catch (Exception e) {
-
             throw new DBException(e.getMessage());
         }
     }
@@ -163,11 +162,11 @@ public class EmployeePayrollDBService {
         }
     }
 
-    public Payroll insertEmployeePayrollValues(Employee employee, Payroll payroll) {
+    public Payroll insertEmployeePayrollValues(Employee employee, Double basicPay) {
         Payroll updatedPayroll;
         String insertEmployee = String.format("insert into employee values('%s','%s','%s','%s','%s','%s','%s')", employee.getId(), employee.getName(), employee.getGender(), employee.getAddress(), employee.getPhoneNumber(), Date.valueOf(employee.getStartDate()), employee.getCompanyId());
-        String insertPayroll = String.format("insert into payroll values('%s','%s','%s','%s','%s','%s')", payroll.getEmployeeId(), payroll.getBasicPay(), payroll.getDeductions(), payroll.getTaxablePay(), payroll.getIncomeTax(), payroll.getNetPay());
-        String insertEmployeeDepartment=String.format("insert into employee_department values('%s','%s')",employee.getId(),employee.getDepartmentList().get(0).id);
+        String insertPayroll = String.format("insert into payroll(employee_id,basic_pay) values('%s','%s')", employee.getId(), basicPay);
+        String insertEmployeeDepartment = String.format("insert into employee_department values('%s','%s')", employee.getId(), employee.getDepartmentList().get(0).id);
         Connection connection;
         try {
             connection = this.getConnection();
@@ -187,8 +186,7 @@ public class EmployeePayrollDBService {
         }
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(insertPayroll);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             try {
                 connection.rollback();
             } catch (Exception exec) {
@@ -196,10 +194,10 @@ public class EmployeePayrollDBService {
             }
             throw new DBException(e.getMessage());
         }
-        try(Statement statement=connection.createStatement()){
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(insertEmployeeDepartment);
             connection.commit();
-            updatedPayroll = payroll;
+            updatedPayroll = readEmployeeDataFromDB(employee.name).get(0).getPayroll();
         } catch (Exception e) {
             try {
                 connection.rollback();
@@ -209,6 +207,17 @@ public class EmployeePayrollDBService {
             throw new DBException(e.getMessage());
         }
         return updatedPayroll;
+    }
+
+    public boolean deleteEmployee(String name) {
+        String query = String.format("update employee set is_active=false where employe_name='%s'", name);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (Exception e) {
+            throw new DBException(e.getMessage());
+        }
+        return false;
     }
 }
 
