@@ -54,22 +54,29 @@ public class EmployeeServiceTest {
         List<Employee> employeeList = employeePayrollService.readEmployeeJoinedInRange(startDate, endDate);
         Assertions.assertEquals(2, employeeList.size());
     }
+
     @Test
     public void givenMathFunction_WhenCorrect_RetrieveTheResult() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-        Double result=employeePayrollService.getMathValueForGivenMathFunction("sum","F");
+        Double result = employeePayrollService.getMathValueForGivenMathFunction("sum", "F");
         System.out.println(result);
     }
 
     @Test
-    public void givenNewEmployeePayrollData_WhenCorrect_InsertToEMployeeAndPayrollTable(){
+    public void givenNewEmployeePayrollData_WhenCorrect_InsertToEMployeeAndPayrollTable() {
         EmployeePayrollService employeePayrollService = new EmployeePayrollService();
-        Employee employee=new Employee(77,"vish","F","18th main road", 97845978L,LocalDate.of(2020,8,20),123);
-        Department department = new Department(1,"engineer");
+        Employee employee = new Employee(77, "vish", "F", "18th main road", 97845978L, LocalDate.of(2020, 8, 20), 123);
+        Department department = new Department(1, "engineer");
         employee.setDepartmentList(List.of(department));
-        Payroll updatedPayroll=employeePayrollService.insertEmployeePayrollValues(employee,20000.00);
-        boolean result = employeePayrollService.compareEmployeePayrollInsertSync(employee.getName(),updatedPayroll);
+        Payroll updatedPayroll = employeePayrollService.insertEmployeePayrollValues(employee, 20000.00);
+        boolean result = employeePayrollService.compareEmployeePayrollInsertSync(employee.getName(), updatedPayroll);
         Assertions.assertTrue(result);
     }
 
+    @Test
+    public void givenEmployeeName_WhenCorrect_DeleteEmployeeBySettingIs_Actove_TO_False() {
+        EmployeePayrollService employeePayrollService = new EmployeePayrollService();
+        boolean result = employeePayrollService.deleteEmployee("vish");
+        Assertions.assertFalse(result);
+    }
 }
